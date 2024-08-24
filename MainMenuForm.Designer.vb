@@ -26,8 +26,8 @@ Partial Class MenuForm
         Me.Label1 = New System.Windows.Forms.Label()
         Me.btn_Login = New System.Windows.Forms.Button()
         Me.btn_SignUp = New System.Windows.Forms.Button()
-        Me.btn_Faqs = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.btn_Exit = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'Label1
@@ -35,19 +35,21 @@ Partial Class MenuForm
         Me.Label1.AutoSize = True
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Font = New System.Drawing.Font("Elephant", 48.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(78, -2)
+        Me.Label1.Location = New System.Drawing.Point(104, -13)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(291, 83)
+        Me.Label1.Size = New System.Drawing.Size(363, 103)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "A- Level"
         '
         'btn_Login
         '
         Me.btn_Login.BackColor = System.Drawing.Color.Teal
-        Me.btn_Login.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btn_Login.Location = New System.Drawing.Point(129, 147)
+        Me.btn_Login.Font = New System.Drawing.Font("Microsoft Sans Serif", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btn_Login.Location = New System.Drawing.Point(109, 156)
+        Me.btn_Login.Margin = New System.Windows.Forms.Padding(4)
         Me.btn_Login.Name = "btn_Login"
-        Me.btn_Login.Size = New System.Drawing.Size(173, 85)
+        Me.btn_Login.Size = New System.Drawing.Size(358, 105)
         Me.btn_Login.TabIndex = 1
         Me.btn_Login.Text = "Login"
         Me.btn_Login.UseVisualStyleBackColor = False
@@ -55,49 +57,54 @@ Partial Class MenuForm
         'btn_SignUp
         '
         Me.btn_SignUp.BackColor = System.Drawing.Color.Teal
-        Me.btn_SignUp.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btn_SignUp.Location = New System.Drawing.Point(129, 238)
+        Me.btn_SignUp.Font = New System.Drawing.Font("Microsoft Sans Serif", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btn_SignUp.Location = New System.Drawing.Point(109, 268)
+        Me.btn_SignUp.Margin = New System.Windows.Forms.Padding(4)
         Me.btn_SignUp.Name = "btn_SignUp"
-        Me.btn_SignUp.Size = New System.Drawing.Size(173, 85)
+        Me.btn_SignUp.Size = New System.Drawing.Size(358, 105)
         Me.btn_SignUp.TabIndex = 2
         Me.btn_SignUp.Text = "Sign Up"
         Me.btn_SignUp.UseVisualStyleBackColor = False
-        '
-        'btn_Faqs
-        '
-        Me.btn_Faqs.BackColor = System.Drawing.Color.Teal
-        Me.btn_Faqs.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btn_Faqs.Location = New System.Drawing.Point(12, 315)
-        Me.btn_Faqs.Name = "btn_Faqs"
-        Me.btn_Faqs.Size = New System.Drawing.Size(82, 34)
-        Me.btn_Faqs.TabIndex = 3
-        Me.btn_Faqs.Text = "FAQ's"
-        Me.btn_Faqs.UseVisualStyleBackColor = False
         '
         'Label2
         '
         Me.Label2.AutoSize = True
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Font = New System.Drawing.Font("Elephant", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(72, 70)
+        Me.Label2.Location = New System.Drawing.Point(96, 75)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(308, 62)
+        Me.Label2.Size = New System.Drawing.Size(385, 77)
         Me.Label2.TabIndex = 4
         Me.Label2.Text = "Maths Quiz"
         '
+        'btn_Exit
+        '
+        Me.btn_Exit.BackColor = System.Drawing.Color.Teal
+        Me.btn_Exit.Font = New System.Drawing.Font("Microsoft Sans Serif", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btn_Exit.Location = New System.Drawing.Point(228, 381)
+        Me.btn_Exit.Margin = New System.Windows.Forms.Padding(4)
+        Me.btn_Exit.Name = "btn_Exit"
+        Me.btn_Exit.Size = New System.Drawing.Size(121, 50)
+        Me.btn_Exit.TabIndex = 5
+        Me.btn_Exit.Text = "Exit"
+        Me.btn_Exit.UseVisualStyleBackColor = False
+        '
         'MenuForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.SeaGreen
         Me.BackgroundImage = CType(resources.GetObject("$this.BackgroundImage"), System.Drawing.Image)
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.ClientSize = New System.Drawing.Size(434, 361)
+        Me.ClientSize = New System.Drawing.Size(579, 444)
+        Me.Controls.Add(Me.btn_Exit)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.btn_Faqs)
         Me.Controls.Add(Me.btn_SignUp)
         Me.Controls.Add(Me.btn_Login)
         Me.Controls.Add(Me.Label1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "MenuForm"
         Me.Text = "Menu"
         Me.ResumeLayout(False)
@@ -108,6 +115,6 @@ Partial Class MenuForm
     Friend WithEvents Label1 As Label
     Friend WithEvents btn_Login As Button
     Friend WithEvents btn_SignUp As Button
-    Friend WithEvents btn_Faqs As Button
     Friend WithEvents Label2 As Label
+    Friend WithEvents btn_Exit As Button
 End Class

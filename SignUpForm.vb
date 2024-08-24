@@ -1,83 +1,13 @@
-﻿Imports System.Data
+﻿Option Strict On
+Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Data.SqlTypes
 Imports System.Text.RegularExpressions
 
 Public Class SignUpForm
 
-    Private Sub btn_Save_Click(sender As Object, e As EventArgs) Handles btn_Save.Click
-        'this constant is used to check if the characters entered are valid
-        Const cCharacters As String = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!£$%^&*()_+-={}[]:@;'<>?,./#~"
-        'makes sure the user has entered a username
-        If txt_Username.Text = "" Then
-            MessageBox.Show("Enter username", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            txt_Username.Focus() 'focus the username textbox.
-            Exit Sub
-        End If
-        'makes sure the user has entered a password
-        If txt_Password.Text = "" Then
-            MessageBox.Show("Enter password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            txt_Password.Focus() 'focus the password textbox.
-            Exit Sub
-        End If
-        'makes sure the user has entered an email
-        If txt_Email.Text = "" Then
-            MessageBox.Show("Enter email", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            txt_Email.Focus() 'focus the email textbox.
-            Exit Sub
-        End If
-        'makes sure username and password are different
-        If txt_Password.Text = txt_Username.Text Then
-            MessageBox.Show("Username and password must be different", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            txt_Username.Text = ""
-            txt_Password.Text = ""
-            txt_Username.Focus()
-            Exit Sub
-        End If
-
-        'makes sure username and password are less than 21 characters in length
-        If txt_Username.Text.Length > 20 Or txt_Password.Text.Length > 20 Then
-            MessageBox.Show("Must be less then 21 characters", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            txt_Username.Text = ""
-            txt_Password.Text = ""
-            txt_Username.Focus()
-            Exit Sub
-        End If
-
-        'makes sure username and password are less than 6 characters in length
-        If txt_Username.Text.Length < 5 Or txt_Password.Text.Length < 5 Then
-            MessageBox.Show("Must be at least 5 characters", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            txt_Username.Text = ""
-            txt_Password.Text = ""
-            txt_Username.Focus()
-            Exit Sub
-        End If
-
-        'loops to make sure each character in username is valid
-        For i = 0 To txt_Username.Text.Length - 1
-            If cCharacters.Contains(txt_Username.Text(i)) Then
-
-            Else
-                MessageBox.Show("Username must contain valid characters", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                txt_Username.Text = ""
-                txt_Username.Focus()
-                Exit Sub
-            End If
-        Next i
-
-        'loops to make sure each character in password is valid
-        For j = 0 To txt_Password.Text.Length - 1
-            If cCharacters.Contains(txt_Password.Text(j)) Then
-
-            Else
-                MessageBox.Show("Password must contain valid characters", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                txt_Password.Text = ""
-                txt_Password.Focus()
-                Exit Sub
-            End If
-        Next j
-
-        'checks the email aginst the regex string in the function IsEmail
+    'Checks if the information entered by the user is valid and if so, the data is added to the UserInformation table in the database.
+    Private Sub SignUp()
+        'Checks the email aginst the REGEX string in the function IsEmail.
         If IsEmail(txt_Email.Text) = True Then
 
         Else
@@ -87,7 +17,25 @@ Public Class SignUpForm
             Exit Sub
         End If
 
-        'checks if usuername is already in use
+        'Calls the validation sub and checks if the criteria is met.
+        If Validation(txt_Username.Text) = False Or Validation(txt_Password.Text) = False Or Validation(txt_Email.Text) = False Then
+            txt_Username.Text = ""
+            txt_Password.Text = ""
+            txt_Email.Text = ""
+            nud_Age.Value = 16
+            Exit Sub
+        End If
+
+        'Makes sure username and password are different.
+        If txt_Password.Text = txt_Username.Text Then
+            MessageBox.Show("Username and password must be different", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            txt_Username.Text = ""
+            txt_Password.Text = ""
+            txt_Username.Focus()
+            Exit Sub
+        End If
+
+        'Checks if username is already in use.
         If DatabaseCheck() = False Then
             MessageBox.Show("Username already in use, enter another", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             txt_Username.Text = ""
@@ -95,66 +43,95 @@ Public Class SignUpForm
             Exit Sub
         End If
 
-        'adds all data entered into the usernamepassword(UP) database
+        'Calls the Createkey sub to generate a random caeser cipher key.
+        UserKey = CreateKey()
+
+        'Adds all data entered into the UserInformation table in the database.
         Try
-            Dim con = New SqlConnection("Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Alex\Documents\UserInformationDB.mdf;Integrated Security=True;Connect Timeout=30")
-            Dim cmd = New SqlCommand
-            cmd.CommandType = CommandType.Text
-            cmd.CommandText = "INSERT INTO UP (Username, Password, Age, Email) VALUES ('" & txt_Username.Text & "','" & txt_Password.Text & "', " & nud_Age.Value & ", '" & txt_Email.Text & "')"
-            cmd.Connection = con
+            Dim con As New SqlConnection("Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\alexp\OneDrive\Documents\Visual Studio 2022\Projects\QUIZ-PROGRAM-NEA\QUIZDB.mdf;Integrated Security=True")
+            Dim cmd As New SqlCommand("INSERT INTO UserInformation (Username, Password, Age, Email, ShiftChar) VALUES ('" & txt_Username.Text & "','" & Encrypt(txt_Password.Text, UserKey) & "', " & nud_Age.Value & ", '" & txt_Email.Text & "', " & UserKey & ")", con)
             con.Open()
-            cmd.ExecuteNonQuery()
+            If cmd.ExecuteNonQuery() = 1 Then
+                Me.Close()
+                UserMenuForm.Show()
+                UserUsername = txt_Username.Text
+            Else
+                MsgBox("User not added")
+            End If
             con.Close()
         Catch ex As Exception
 
         End Try
-
+        'Resets all values after exit.
+        UserKey = 0
         txt_Username.Text = ""
         txt_Password.Text = ""
         txt_Email.Text = ""
-        Me.Hide()
-        UserMenuForm.Show() 'if all information entered is robust, then the user is directed to the user menu
+        'If all information entered is robust, then the user is directed to the user menu.
     End Sub
 
-    'checks the database to see whether the username is already in use with another account
+    'When the save button is clicked, the SignUp sub is called.
+    Private Sub btn_Save_Click(sender As Object, e As EventArgs) Handles btn_Save.Click
+        SignUp()
+    End Sub
+
+    'Checks the database to see whether the username is already in use with another account.
     Private Function DatabaseCheck() As Boolean
-        Dim con1 As SqlConnection
-        Dim cmd1 As SqlCommand
+        Dim con As SqlConnection
+        Dim cmd As SqlCommand
+        Dim sdr As SqlDataReader
         Try
-            con1 = New SqlConnection("Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Alex\Documents\UserInformationDB.mdf;Integrated Security=True;Connect Timeout=30")
-            con1.Open()
-            cmd1 = New SqlCommand("select * from UP where username='" + txt_Username.Text + "'", con1)
-            cmd1.Connection = con1
-            Dim sdr1 As SqlDataReader
-            sdr1 = cmd1.ExecuteReader()
-            If sdr1.Read() Then
+            con = New SqlConnection("Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\alexp\OneDrive\Documents\Visual Studio 2022\Projects\QUIZ-PROGRAM-NEA\QUIZDB.mdf;Integrated Security=True;Connect Timeout=30")
+            con.Open()
+            cmd = New SqlCommand("SELECT * FROM UserInformation WHERE Username='" + txt_Username.Text + "'", con)
+            cmd.Connection = con
+            sdr = cmd.ExecuteReader()
+            If sdr.Read() Then
                 Return False
             Else
                 Return True
             End If
-            con1.Close()
+            con.Close()
         Catch ex As Exception
             Return False
         End Try
     End Function
 
-    'checks if email follows the typical email format
+    'Checks if the email follows the typical email format using REGEX.
     Private Function IsEmail(ByVal email As String) As Boolean
         Static emailExpression As New Regex("^[_a-z0-9-]+(.[a-z0-9-]+)@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$")
         Return emailExpression.IsMatch(email)
     End Function
 
-    Private Sub lnk_Login_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnk_Login.LinkClicked
-        Me.Hide()
-        LoginForm.Show()
-    End Sub
+    'Returns a random number between 1 and 25 to create the key.
+    Private Function CreateKey() As Integer
+        Randomize()
+        Return CInt(Int(25 * Rnd() + 1))
+    End Function
 
+    'When the return button is clicked, the user will be directed to the main menu screen.
     Private Sub btn_ReturntoMenu_Click(sender As Object, e As EventArgs) Handles btn_ReturntoMenu.Click
-        Me.Hide()
+        Me.Close()
         MenuForm.Show()
     End Sub
 
+    'Sets the position of the form on the screen.
     Private Sub SignUpForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.Location = New Point(250, 250)
     End Sub
+
+    'When the enter key is pressed, the SignUp sub is called.
+    Private Sub enter_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txt_Password.KeyPress, txt_Username.KeyPress, txt_Email.KeyPress, nud_Age.KeyPress
+        If e.KeyChar = Microsoft.VisualBasic.ChrW(Keys.Enter) Then
+            e.Handled = True
+            SignUp()
+        End If
+    End Sub
+
+    'When the login button is clicked, the user will be directed to the login screen.
+    Private Sub btn_Login_Click(sender As Object, e As EventArgs) Handles btn_Login.Click
+        Me.Close()
+        LoginForm.Show()
+    End Sub
+
 End Class
